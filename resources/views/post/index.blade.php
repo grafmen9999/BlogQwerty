@@ -3,6 +3,17 @@
 @section('content')
 <div class="blog-main">
     <div class="row">
+        <div class="col-md-12">
+            @if (count($errors) > 0)
+                <div class="alert alert-danger" style="text-align: center;" role="alert">
+                    @foreach ($errors->all() as $error)
+                        <b> {{ $error }}</b><br>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+    <div class="row">
         @forelse($posts as $post)
         <div class="col-md-6 ">
             <div class="card mb-4">

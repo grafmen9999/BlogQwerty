@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
-use App\Post;
-use App\Tag;
+use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -19,7 +18,9 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request Сюда передаются фильтры [filter={without-comment, popular, my}, tag={tag_id}]
+     * @return \Illuminate\Http\Response view post.index with $post [simplePaginate]
+     * Посты мы получаем с условиями фильтраций
      */
     public function index(Request $request)
     {
@@ -36,6 +37,8 @@ class PostController extends Controller
 
             if ($request->filter == ('my') && Auth::user()) {
                 $posts->userOwner(Auth::id());
+            } else {
+                return redirect()->route('post.index')->withErrors(['auth' => 'You\'r not auth']);
             }
         }
 
@@ -53,7 +56,7 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response view post.create with tags => Tag::all()
      */
     public function create()
     {
@@ -66,7 +69,7 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response redirect to post.show with result $post
      */
     public function store(Request $request)
     {
@@ -94,8 +97,8 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Post  $post
+     * @return \Illuminate\Http\Response view post.show with $post and $post->comments where parent_id = null (paginate)
      */
     public function show(Post $post)
     {
@@ -109,13 +112,13 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response view post.edit with ['post'=>$post, 'tags'=>Tag::all()]
      */
     public function edit(Post $post)
     {
         return view('post.edit', [
             'post' => $post,
-            'tags' => \App\Tag::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
@@ -123,8 +126,8 @@ class PostController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Post  $post update model
+     * @return \Illuminate\Http\Response redirect to post.show with result $post
      */
     public function update(Request $request, Post $post)
     {
@@ -151,7 +154,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Post  $post
+     * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post)

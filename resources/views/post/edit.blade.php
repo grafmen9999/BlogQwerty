@@ -42,8 +42,12 @@
                     <select class="form-control" name="tags[]" multiple>
                         @foreach($tags as $tag)
                             <option value="{{ $tag->id }}"
-                            @foreach($post->tags as $post_tag) @if ($tag->id == $post_tag->id) selected @endif @endforeach
-                            >{{ $tag->name }}
+@foreach($post->tags as $postTag)
+    @if ($tag->getKey() == $postTag->getKey())
+        {{ __('selected') }}
+    @endif
+@endforeach
+                            >{{ $tag->getAttribute('name') }}
                             </option>
                         @endforeach
                     </select>

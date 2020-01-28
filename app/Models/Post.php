@@ -1,9 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
@@ -14,17 +13,17 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo('\App\User');
+        return $this->belongsTo('\App\Models\User');
     }
 
     public function tags()
     {
-        return $this->belongsToMany('\App\Tag');
+        return $this->belongsToMany('\App\Models\Tag');
     }
 
     public function comments()
     {
-        return $this->hasMany('\App\Comment');
+        return $this->hasMany('\App\Models\Comment');
     }
     
     public function scopePopular($query)
