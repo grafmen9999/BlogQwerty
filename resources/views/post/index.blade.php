@@ -35,7 +35,13 @@
             </div>
         </div>
         @empty
-            <div class="card mb-4">Blog post not find</div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-title text-muted d-flex justify-content-center">
+                        Blog post not find
+                    </div>
+                </div>
+            </div>
         @endforelse
     </div>
 </div><!-- /.blog-main -->

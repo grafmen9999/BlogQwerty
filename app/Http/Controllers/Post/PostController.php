@@ -20,36 +20,24 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-    //     if (is_null($request)) {
-    //         $posts = Post::simplePaginate(15);
-    //         Log::log('info', 'Request is null');
-    //     } elseif (isset($request->orderBy)) {
-    //         if ($request->orderBy == 'my-posts') {
-    //             if (Auth::user()) {
-    //                 $posts = Auth::user()->posts()->simplePaginate(15);
-    //             }
-    //         } elseif ($request->orderBy == 'without-comments') {
-    //             $posts = Post::all()->transform(function ($item, $key) {
-    //                 if ($item->comments()->count != 0) {
-    //                     $item->pop();
-    //                 }
-    //             });
-    //             foreach (Post::all() as $post) {
-    //                 if ($post->comments()->count() == 0) {
-    //                     $posts->push($post);
-    //                 }
-    //             }
+        $posts = Post::withCount('comments');
 
-    //             $posts = $posts->simplePaginate(15);
-    //         } elseif ($request->orderBy == 'popular') {
-    //             $posts = Post::orderBy('views', 'desc')->simplePaginate(15);
-    //         }
-    //     }
+        if ($request->has('without-comment')) {
+            $posts = Post::doesntHave('comments');
+        }
+
+        if ($request->has('popular')) {
+            $posts->popular();
+        }
+
+        if ($request->has('my') && Auth::user()) {
+            $posts->userOwner(Auth::id());
+        }
 
         return view('post.index', [
-            'posts' => Post::simplePaginate(15)
+            'posts' => $posts->simplePaginate(15)
         ]);
     }
 
