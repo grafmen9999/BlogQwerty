@@ -91,10 +91,18 @@
   !*** ./resources/js/app.js ***!
   \*****************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // require('./bootstrap');
 $('#name-field').dblclick(function () {
+  var attr = $(this).attr('profile'); // For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+
+  if (!(_typeof(attr) !== ( true ? "undefined" : undefined) && attr !== false)) {
+    return;
+  }
+
   var elem = $(this).find('p');
 
   if (elem != undefined) {
@@ -111,6 +119,12 @@ $('#name-field').dblclick(function () {
   }
 });
 $('#email-field').dblclick(function () {
+  var attr = $(this).attr('profile'); // For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+
+  if (!(_typeof(attr) !== ( true ? "undefined" : undefined) && attr !== false)) {
+    return;
+  }
+
   var elem = $(this).find('p');
 
   if (elem != undefined) {

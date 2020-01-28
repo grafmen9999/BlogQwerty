@@ -1,6 +1,12 @@
 // require('./bootstrap');
 
 $('#name-field').dblclick(function () {
+    var attr = $(this).attr('profile');
+    // For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+    if (!(typeof attr !== typeof undefined && attr !== false)) {
+        return;
+    }
+
     var elem = $(this).find('p');
     if (elem != undefined) {
         var parent = $(elem).parent();
@@ -19,6 +25,12 @@ $('#name-field').dblclick(function () {
 });
 
 $('#email-field').dblclick(function () {
+    var attr = $(this).attr('profile');
+    // For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+    if (!(typeof attr !== typeof undefined && attr !== false)) {
+        return;
+    }
+
     var elem = $(this).find('p');
     if (elem != undefined) {
         var parent = $(elem).parent();
