@@ -11,20 +11,23 @@
                     @if ($post->tags->count() > 0)
                         <div>Tags:<span class="tags">
                             @foreach($post->tags as $tag)
-                                <span class="tag">
+                                <a class="tag" href="{{ route('post.index', ['tag' => $tag->id]) }} @if(request()->has('filter'))&filter={{ request()->filter }} @endif">
                                     {{ $tag->name }}
-                                </span>
+                                </a>
                             @endforeach
                         </span></div>
                     @endif
-                    <p class="card-text">{{ $post->body }}</p>
+                    <p class="card-text">{!! $post->body !!}</p>
                 </div>
                 <div class="card-footer text-muted">
                     <div class="d-flex flex-row justify-content-between">
                         <div><span>Posted on {{ Carbon\Carbon::parse($post->updated_at)->format('d-M-Y') }} by</span>
                             <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}</a>
                         </div>
-                        <div>Views: {{ $post->views }}</div>
+                        <div class="d-flex flex-row justify-content-between">
+                            @if ($post->user->id == Auth::id()) <a href="{{ route('post.edit', ['post' => $post]) }}" class="btn btn-primary mx-1">Edit</a> @endif
+                            <div>Views: {{ $post->views }}</div>
+                        </div>
                     </div>
                 </div>
             </div>

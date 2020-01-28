@@ -42,7 +42,6 @@
                     <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'my']) }}">My-post</a>
                     <hr>
                     <a class="dropdown-item" href="{{ route('post.create') }}">Create new post</a>
-                    
                 </div>
             </li>
         </ul>

@@ -17,7 +17,7 @@
                             @endforeach
                         </span></div>
                     @endif
-                    <p class="card-text">{{ substr($post->body, 0, 120) . '...' }}</p>
+                    <p class="card-text">{!! substr($post->body , 0, 120) !!}</p>
                     <a href="{{ route('post.show', ['post' => $post]) }}" class="btn btn-primary">Read More &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">

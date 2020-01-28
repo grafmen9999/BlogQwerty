@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -55,7 +57,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('post.create');
+        return view('post.create', [
+            'tags' => Tag::all()
+        ]);
     }
 
     /**
@@ -68,15 +72,23 @@ class PostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "title" => 'required|string|max:255',
-            "body" => 'required',
+            "body" => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            // return $validator->errors();
-            return redirect()->back()->withErrors($validator)->withInput($request->except(['user_id']));
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
+        }
+
+        $post = new Post($request->all());
+
+        if ($request->has('tags')) {
+            foreach ($request->tags as $tag_id) {
+                $tag = Tag::find($tag_id);
+                $tag->posts()->save($post);
+            }
         }
         
-        return $request;
+        return redirect()->route('post.show', ['post' => $post]);
     }
 
     /**
@@ -101,7 +113,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('post.edit', [
+            'post' => $post,
+            'tags' => \App\Tag::all(),
+        ]);
     }
 
     /**
@@ -113,7 +128,24 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "title" => 'required|string|max:255',
+            "body" => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
+        }
+
+        if ($request->has('tags')) {
+            $post->tags()->sync($request->tags);
+        } else {
+            $post->tags()->sync([]);
+        }
+        
+        $post->update($request->all());
+
+        return redirect()->route('post.show', ['post' => $post]);
     }
 
     /**
@@ -124,6 +156,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
     }
 }

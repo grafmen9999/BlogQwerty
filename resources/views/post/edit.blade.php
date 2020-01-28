@@ -33,14 +33,18 @@
                 @endforeach
                 </div>
             @endif
-            <form action="{{ route('post.store') }}" method="POST" role="form">
+            <form action="{{ route('post.update', ['post' => $post]) }}" method="POST" role="form">
                 @csrf
+                @method('put')
                 <div class="form-group">
-                    <input class="form-control my-2" type="text" name="title" value="{{ old('title') }}" placeholder="Title">
-                    <textarea class="form-control" rows="3" name="body">{{ old('body') }}</textarea>
+                    <input class="form-control my-2" type="text" name="title" value="{{ $post->title }}" placeholder="Title">
+                    <textarea class="form-control" rows="3" name="body">{{ $post->body }}</textarea>
                     <select class="form-control" name="tags[]" multiple>
                         @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            <option value="{{ $tag->id }}"
+                            @foreach($post->tags as $post_tag) @if ($tag->id == $post_tag->id) selected @endif @endforeach
+                            >{{ $tag->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
