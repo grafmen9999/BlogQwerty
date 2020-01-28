@@ -12,9 +12,9 @@
                     @if ($post->tags->count() > 0)
                         <div>Tags:<span class="tags">
                             @foreach($post->tags as $tag)
-                                <span class="tag">
+                                <a class="tag" href="{{ route('post.index', ['tag' => $tag->id]) }}">
                                     {{ $tag->name }}
-                                </span>
+                                </a>
                             @endforeach
                         </span></div>
                     @endif

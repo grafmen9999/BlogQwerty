@@ -35,10 +35,10 @@
             <li class="nav-item dropdown">
                 <a id="navbarDropdownPosts" href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>Posts <span class="caret"></span></a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdonwPosts">
-                    <a class="dropdown-item" href="{{ route('post.index', ['all'=>'q']) }}">All</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['without-comment'=>'q']) }}">Without comments</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['popular'=>'q']) }}">Popular</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['my'=>'q']) }}">My-post</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['all'=>'filter']) }}">All</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['without-comment'=>'filter']) }}">Without comments</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['popular'=>'filter']) }}">Popular</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['my'=>'filter']) }}">My-post</a>
                 </div>
             </li>
         </ul>

@@ -22,10 +22,10 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $posts = Post::withCount('comments');
+        $posts = Post::with('comments');
 
         if ($request->has('without-comment')) {
-            $posts = Post::doesntHave('comments');
+            $posts->doesntHave('comments');
         }
 
         if ($request->has('popular')) {
@@ -34,6 +34,12 @@ class PostController extends Controller
 
         if ($request->has('my') && Auth::user()) {
             $posts->userOwner(Auth::id());
+        }
+
+        if ($request->has('tag')) {
+            $posts->whereHas('tags', function ($query) use ($request) {
+                $query->where('tag_id', '=', $request->tag);
+            });
         }
 
         return view('post.index', [
