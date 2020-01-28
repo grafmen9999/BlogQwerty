@@ -16,6 +16,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="{{ asset('js/jquery.min.js') }}" defer></script>
     <script src="{{ asset('js/popper.min.js') }}" defer></script>
     <script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
@@ -35,10 +36,13 @@
             <li class="nav-item dropdown">
                 <a id="navbarDropdownPosts" href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>Posts <span class="caret"></span></a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdonwPosts">
-                    <a class="dropdown-item" href="{{ route('post.index', ['all'=>'filter']) }}">All</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['without-comment'=>'filter']) }}">Without comments</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['popular'=>'filter']) }}">Popular</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['my'=>'filter']) }}">My-post</a>
+                    <a class="dropdown-item" href="{{ route('post.index') }}">All</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'without-comment']) }}">Without comments</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'popular']) }}">Popular</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'my']) }}">My-post</a>
+                    <hr>
+                    <a class="dropdown-item" href="{{ route('post.create') }}">Create new post</a>
+                    
                 </div>
             </li>
         </ul>

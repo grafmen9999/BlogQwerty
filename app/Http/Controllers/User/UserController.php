@@ -74,14 +74,14 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $is_change = false;
-
         $validator = $this->validateForm($request);
 
-        if (!is_null($validator)) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['password', 'password_confirmation']));
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator->errors())
+                ->withInput($request->except(['password', 'password_confirmation']));
         } else {
-            $is_change = true;
             // change data if we don't find errors
             $user->name = $request->name ?? $user->name;
             $user->email = $request->email ?? $user->email;
@@ -90,16 +90,12 @@ class UserController extends Controller
 
         // if we change the avatar
         if (isset($request->avatar_src)) {
-            $is_change = true;
-
             $filename = $user->email . '_avatar.jpg';
             // save file to storage
             $user->avatar_src = Storage::putFileAs('public/avatars', new File($request->file('avatar_src')), $filename); // email is unique
         }
 
-        if ($is_change) {
-            $user->update();
-        }
+        $user->update();
 
         return redirect()->route('user.show', ['user' => $user]);
     }
@@ -117,39 +113,10 @@ class UserController extends Controller
 
     private function validateForm(Request $request)
     {
-        if (isset($request->name)) {
-            $validator = Validator::make(['name' => $request->name], [
-                "name" => 'required|string|max:255'
-            ]);
-
-            if ($validator->fails()) {
-                return $validator;
-            }
-        }
-
-        if (isset($request->email)) {
-            $validator = Validator::make(['email' => $request->email], [
-                'email' => 'required|string|email|max:255|unique:users'
-            ]);
-
-            if ($validator->fails()) {
-                return $validator;
-            }
-        }
-
-        if (isset($request->password) || $request->password_confirmation) {
-            $validator = Validator::make([
-                'password' => $request->password,
-                'password_confirmation' => $request->password_confirmation
-            ], [
-                'password' => 'required|string|min:8|confirmed',
-            ]);
-
-            if ($validator->fails()) {
-                return $validator;
-            }
-        }
-
-        return null;
+        return Validator::make($request->all(), [
+            'email' => 'sometimes|required|string|email|max:255|unique:users',
+            "name" => 'sometimes|required|string|max:255',
+            'password' => 'sometimes|required|string|min:8|confirmed',
+        ]);
     }
 }

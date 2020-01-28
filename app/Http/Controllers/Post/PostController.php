@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use App\Post;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -24,16 +23,18 @@ class PostController extends Controller
     {
         $posts = Post::with('comments');
 
-        if ($request->has('without-comment')) {
-            $posts->doesntHave('comments');
-        }
+        if ($request->has('filter')) {
+            if ($request->filter == ('without-comment')) {
+                $posts->doesntHave('comments');
+            }
 
-        if ($request->has('popular')) {
-            $posts->popular();
-        }
+            if ($request->filter == ('popular')) {
+                $posts->popular();
+            }
 
-        if ($request->has('my') && Auth::user()) {
-            $posts->userOwner(Auth::id());
+            if ($request->filter == ('my') && Auth::user()) {
+                $posts->userOwner(Auth::id());
+            }
         }
 
         if ($request->has('tag')) {
@@ -65,7 +66,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "title" => 'required|string|max:255',
+            "body" => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            // return $validator->errors();
+            return redirect()->back()->withErrors($validator)->withInput($request->except(['user_id']));
+        }
+        
+        return $request;
     }
 
     /**

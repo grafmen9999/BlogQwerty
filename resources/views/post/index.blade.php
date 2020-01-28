@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
 <div class="blog-main">
     <div class="row">
         @forelse($posts as $post)
@@ -12,7 +11,7 @@
                     @if ($post->tags->count() > 0)
                         <div>Tags:<span class="tags">
                             @foreach($post->tags as $tag)
-                                <a class="tag" href="{{ route('post.index', ['tag' => $tag->id]) }}">
+                                <a class="tag" href="{{ route('post.index', ['tag' => $tag->id]) }} @if(request()->has('filter'))&filter={{ request()->filter }} @endif">
                                     {{ $tag->name }}
                                 </a>
                             @endforeach

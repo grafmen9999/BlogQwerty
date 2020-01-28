@@ -30,7 +30,7 @@ Route::group(['namespace' => 'Comment'], function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['namespace' => 'User'], function () {
-    Route::resource('/user', 'UserController');
+    Route::resource('/user', 'UserController', ['only' => ['show', 'update']]);
 });
 
 Route::get('/test', function () {
