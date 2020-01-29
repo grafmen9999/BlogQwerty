@@ -4,7 +4,6 @@
 
 <div class="container">
     <div class="row">
-
         <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
         <script>
             tinymce.init({
@@ -20,11 +19,9 @@
                 toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
             });
         </script>
-        <hr>
-
         <!-- the comment box -->
 
-        <div class="well">
+        <div class="well col-md-12">
             <h4><i class="fa fa-paper-plane-o"></i> Leave a Post:</h4>
             @if (count($errors) > 0)
                 <div class="alert alert-danger" style="text-align: center;" role="alert">
@@ -33,23 +30,65 @@
                 @endforeach
                 </div>
             @endif
-            <form action="{{ route('post.store') }}" method="POST" role="form">
-                @csrf
-                <div class="form-group">
-                    <input class="form-control my-2" type="text" name="title" value="{{ old('title') }}" placeholder="Title">
-                    <textarea class="form-control" rows="3" name="body">{{ old('body') }}</textarea>
-                    <select class="form-control" name="tags[]" multiple>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
+            <div class="row">
+                <div class="col-md-8">
+                    <form action="{{ route('post.store') }}" method="POST" role="form">
+                        @csrf
+                        <div class="form-group">
+                            <input class="form-control my-2" type="text" name="title" value="{{ old('title') }}" placeholder="Title">
+                            <textarea class="form-control" rows="3" name="body">{{ old('body') }}</textarea>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <select class="form-control" name="category_id">
+                                        <option value="" selected>-- Category not find --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->getKey() }}">{{ $category->getAttribute('name') }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" name="tags[]" multiple>
+                                        @forelse($tags as $tag)
+                                            <option value="{{ $tag->getKey() }}">{{ $tag->getAttribute('name') }}</option>
+                                        @empty
+                                            <option value="" disabled>-- Tags not find --</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-reply"></i>Create post</button>
+                    </form>
                 </div>
-                <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-                <button type="submit" name="say" value="" class="btn btn-primary"><i class="fa fa-reply"></i>Submit</button>
-            </form>
+                <div class="col-md-4">
+                    <div class="row">
+                        <form action="{{ route('tag.store') }}" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label>
+                                    <small><strong>Create tags if his don't exists</strong></small>
+                                    <input type="text" name="names" class="form-control" placeholder="tag1, tag2, tag3, ...">
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-reply"></i>Create tag</button>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <form action="{{ route('category.store') }}" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label>
+                                    <small><strong>Create category if his don't exists</strong></small>
+                                    <input type="text" name="name" class="form-control" placeholder="Category name">
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-reply"></i>Create category</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <hr>   
     </div>
 </div>
 

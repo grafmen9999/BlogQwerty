@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Tag
+ * Class Category
  */
-class Tag extends Model
+class Category extends Model
 {
     /**
      * @var boolean
@@ -19,11 +19,8 @@ class Tag extends Model
      */
     protected $fillable = ['name'];
 
-    /**
-     * @return mixed
-     */
     public function posts()
     {
-        return $this->belongsToMany('\App\Models\Post');
+        return $this->hasMany('\App\Models\Post');
     }
 }

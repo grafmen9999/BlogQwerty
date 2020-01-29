@@ -134,3 +134,9 @@
     padding-bottom: .25rem;
     border-bottom: 1px solid rgba(34, 36, 38, .15);
   }
+  .tag::after {
+      content: ',';
+  }
+  .tag:last-child::after {
+      content: '';
+  }

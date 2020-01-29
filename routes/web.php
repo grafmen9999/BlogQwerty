@@ -11,8 +11,6 @@
 |
 */
 
-use App\User;
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -21,6 +19,14 @@ Auth::routes(['verify' => true]);
 
 Route::group(['namespace' => 'Post'], function () {
     Route::resource('/post', 'PostController');
+});
+
+Route::group(['namespace' => 'Category'], function () {
+    Route::resource('/category', 'CategoryController', ['only' => 'store']);
+});
+
+Route::group(['namespace' => 'Tag'], function () {
+    Route::resource('/tag', 'TagController', ['only' => 'store']);
 });
 
 Route::group(['namespace' => 'Comment'], function () {
@@ -33,7 +39,7 @@ Route::group(['namespace' => 'User'], function () {
     Route::resource('/user', 'UserController', ['only' => ['show', 'update']]);
 });
 
-Route::get('/test', function () {
-    // return App\Comment::where('parent_id', '!=', null)->get();
-    // return App\Comment::find(1)->parent;
-});
+// Route::get('/test', function () {
+//     // return App\Comment::where('parent_id', '!=', null)->get();
+//     // return App\Comment::find(1)->parent;
+// });

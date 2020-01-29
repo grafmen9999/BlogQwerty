@@ -18,27 +18,43 @@
         <div class="col-md-6 ">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h2 class="card-title">{{ $post->title }}</h2>
-                    @if ($post->tags->count() > 0)
-                        <div>Tags:<span class="tags">
-                            @foreach($post->tags as $tag)
-                                <a class="tag" href="{{ route('post.index', ['tag' => $tag->id]) }} @if(request()->has('filter'))&filter={{ request()->filter }} @endif">
-                                    {{ $tag->name }}
-                                </a>
-                            @endforeach
-                        </span></div>
+                    <h2 class="card-title row">
+                        <div class="col-md-12">{{ $post->getAttribute('title') }}</div>
+                    </h2>
+                    <h4 class="card-title row">
+                        <div class="col-md-12 text-muted">{{ $post->getAttribute('category')->name ?? 'Without category' }}</div>
+                    </h4>
+                    @if ($post->getAttribute('tags')->count() > 0)
+                        <div>Tags:
+                                <span class="tags">
+                                @foreach($post->getAttribute('tags') as $tag)
+                                    <a class="tag" href="{{ route('post.index', ['tag' => $tag->getKey()]) }}
+                                    @if(request()->has('filter'))
+                                        &filter={{ request()->filter }}
+                                    @endif"
+                                    >
+                                        {{ $tag->getAttribute('name') }}
+                                    </a>
+                                @endforeach
+                            </span>
+                        </div>
                     @endif
-                    <p class="card-text">{!! substr($post->body , 0, 120) !!}</p>
+                    <p class="card-text">{!! substr($post->getAttribute('body') , 0, 120) !!}</p>
                     <a href="{{ route('post.show', ['post' => $post]) }}" class="btn btn-primary">Read More &rarr;</a>
                 </div>
                 <div class="card-footer text-muted">
-                    <div class="d-flex flex-row justify-content-between">
-                        <div><span>Posted on {{ Carbon\Carbon::parse($post->updated_at)->format('d-M-Y') }} by</span>
-                            <a href="{{ route('user.show', ['user' => $post->user]) }}">{{ $post->user->name }}</a>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <span>
+                                Posted on {{ Carbon\Carbon::parse($post->getAttribute('updated_at'))->format('d-M-Y h:i:s') }} by
+                            </span>
+                            <a href="{{ route('user.show', ['user' => $post->getAttribute('user')]) }}">
+                                {{ $post->getAttribute('user')->getAttribute('name') }}
+                            </a>
                         </div>
-                        <div class="d-flex flex-row justify-content-between">
-                            <div class="mx-1"><small>Comments: {{ $post->comments->count() }}</small></div>
-                            <div><small>Views: {{ $post->views }}</small></div>
+                        <div class="col-md-5 d-flex flex-row justify-content-between">
+                            <div class="mx-1"><small>Comments: {{ $post->getAttribute('comments')->count() }}</small></div>
+                            <div><small>Views: {{ $post->getAttribute('views') }}</small></div>
                         </div>
                     </div>
                 </div>

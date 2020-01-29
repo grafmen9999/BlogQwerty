@@ -34,17 +34,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -62,16 +51,16 @@ class UserController extends Controller
                 ->withInput($request->except(['password', 'password_confirmation']));
         } else {
             // change data if we don't find errors
-            $user->name = $request->name ?? $user->name;
-            $user->email = $request->email ?? $user->email;
-            $user->password = Hash::make($request->password) ?? $user->password;
+            $user->setAttribute('name', $request->name ?? $user->getAttribute('name'));
+            $user->setAttribute('email', $request->email ?? $user->getAttribute('email'));
+            $user->setAttribute('password', Hash::make($request->password) ?? $user->getAttribute('password'));
         }
 
         // if we change the avatar
-        if (isset($request->avatar_src)) {
-            $filename = $user->email . '_avatar.jpg';
+        if ($request->has('avatar_src')) {
+            $filename = $user->getAttribute('email') . '_avatar.jpg';
             // save file to storage
-            $user->avatar_src = Storage::putFileAs('public/avatars', new File($request->file('avatar_src')), $filename); // email is unique
+            $user->setAttribute('avatar_src', Storage::putFileAs('public/avatars', new File($request->file('avatar_src')), $filename)); // email is unique
         }
 
         $user->update();

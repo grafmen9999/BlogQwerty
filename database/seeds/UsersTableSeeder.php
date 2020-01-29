@@ -24,42 +24,41 @@ class UsersTableSeeder extends Seeder
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=MK'
         ]);
 
-        DB::table('users')->insert([
-            'name' => 'Oleg',
-            'email_verified_at' => now(),
-            'email' => 'oleg'.'@gmail.com',
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=Oleg'
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => 'Oleg',
+        //     'email_verified_at' => now(),
+        //     'email' => 'oleg'.'@gmail.com',
+        //     'password' => bcrypt('password'),
+        //     'remember_token' => Str::random(10),
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        //     'avatar_src' => 'https://place-hold.it/30x30?text=Oleg'
+        // ]);
 
-        DB::table('users')->insert([
-            'name' => 'Alex',
-            'email_verified_at' => now(),
-            'email' => 'alex'.'@gmail.com',
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=Alex'
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => 'Alex',
+        //     'email_verified_at' => now(),
+        //     'email' => 'alex'.'@gmail.com',
+        //     'password' => bcrypt('password'),
+        //     'remember_token' => Str::random(10),
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        //     'avatar_src' => 'https://place-hold.it/30x30?text=Alex'
+        // ]);
 
-        DB::table('users')->insert([
-            'name' => 'QwertySoftware',
-            'email_verified_at' => now(),
-            'email' => 'qwertysoftware'.'@gmail.com',
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=QS'
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => 'QwertySoftware',
+        //     'email_verified_at' => now(),
+        //     'email' => 'qwertysoftware'.'@gmail.com',
+        //     'password' => bcrypt('password'),
+        //     'remember_token' => Str::random(10),
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        //     'avatar_src' => 'https://place-hold.it/30x30?text=QS'
+        // ]);
 
-        // factory(App\User::class, 50)->create();
+        factory(App\Models\User::class, 50)->create();
     }
 }
