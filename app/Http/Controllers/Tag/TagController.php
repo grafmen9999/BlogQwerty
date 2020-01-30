@@ -13,6 +13,8 @@ class TagController extends Controller
 {
     /**
      * Store a newly created resource in storage.
+     * Можем создавать много тегов, в базе они не будут повторяться
+     * с одинаковыми именами (а так-же они регистрозависимые)
      *
      * @param  \Illuminate\Http\Request  $request
      *
@@ -31,28 +33,5 @@ class TagController extends Controller
         }
 
         return redirect()->back();
-    }
-
-    /**
-     * @param string $delimiter
-     * @param string $text
-     *
-     * @return false|array
-     */
-    private function explode(string $delimiter, string $text)
-    {
-        $strArr = explode($delimiter, $text);
-
-        if ($strArr == false) {
-            return false;
-        }
-
-        foreach ($strArr as &$str) {
-            if (($str = $this->explode($delimiter, $str)) == false) {
-                $str = trim($str);
-            }
-        }
-
-        return $strArr;
     }
 }
