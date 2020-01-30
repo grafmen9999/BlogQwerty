@@ -51,7 +51,11 @@
             <div class="col-md-8">
                 <div class="tab-content profile-tab" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="row" id="name-field" @if (Auth::id() == $user->id) profile='' @endif>
+                        <div class="row" id="name-field"
+                            @if (Auth::id() == $user->id)
+                                profile=''
+                            @endif
+                        >
                             <div class="col-md-6">
                                 <label for="nameInputs">Name</label>
                             </div>
@@ -66,7 +70,11 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="row" id="email-field" @if (Auth::id() == $user->id) profile='' @endif>
+                        <div class="row" id="email-field"
+                            @if (Auth::id() == $user->id)
+                                profile=''
+                            @endif
+                        >
                             <div class="col-md-6">
                                 <label for="emailInputs">Email</label>
                             </div>

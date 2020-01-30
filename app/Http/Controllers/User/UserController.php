@@ -19,6 +19,7 @@ class UserController extends Controller
     {
         $this->middleware(['verified']);
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +27,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::paginate(20);
+
+        return $users;
     }
 
     /**
