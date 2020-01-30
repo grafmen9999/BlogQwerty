@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['verified']);
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -51,9 +58,17 @@ class UserController extends Controller
                 ->withInput($request->except(['password', 'password_confirmation']));
         } else {
             // change data if we don't find errors
-            $user->setAttribute('name', $request->name ?? $user->getAttribute('name'));
-            $user->setAttribute('email', $request->email ?? $user->getAttribute('email'));
-            $user->setAttribute('password', Hash::make($request->password) ?? $user->getAttribute('password'));
+            if ($request->has('name')) {
+                $user->setAttribute('name', $request->name);
+            }
+
+            if ($request->has('email')) {
+                $user->setAttribute('email', $request->email);
+            }
+
+            if ($request->has('password')) {
+                $user->setAttribute('password', Hash::make($request->password));
+            }
         }
 
         // if we change the avatar
@@ -88,8 +103,8 @@ class UserController extends Controller
     {
         return Validator::make($request->all(), [
             'email' => 'sometimes|required|string|email|max:255|unique:users',
-            "name" => 'sometimes|required|string|max:255',
-            'password' => 'sometimes|required|string|min:8|confirmed',
+            "name" => 'sometimes|required|string|min:2|max:255',
+            'password' => 'sometimes|required|string|min:8|max:16|confirmed',
         ]);
     }
 }

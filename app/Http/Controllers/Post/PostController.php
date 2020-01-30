@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class PostController
@@ -33,15 +35,19 @@ class PostController extends Controller
     {
         $posts = Post::with('comments');
 
+        /*
+        Да, мне стыдно за этот кусочек.
+        По хорошему тут надо сделать через интерфейc, и реализовать его,
+        возвращать метод будет подготовленный запрос (ИМХО)
+        */
         if ($request->has('filter')) {
-            if (strcmp($request->filter, 'without-comment') == 0) {
-                $posts->doesntHave('comments');
-            } elseif (strcmp($request->filter, 'popular') == 0) {
-                $posts->popular();
-            } elseif (strcmp($request->filter, 'my') == 0 && Auth::user()) {
-                $posts->userOwner(Auth::id());
-            } else {
-                return redirect()->route('post.index')->withErrors(['auth' => 'You\'r not auth']);
+            try {
+                $posts = $this->filters($posts, $request->filter);
+            } catch (HttpException $e) {
+                return redirect()->route('post.index')->withErrors([
+                    'code' => $e->getStatusCode(),
+                    'message' => $e->getMessage()
+                ]);
             }
         }
 
@@ -54,6 +60,33 @@ class PostController extends Controller
         return view('post.index', [
             'posts' => $posts->simplePaginate(15)
         ]);
+    }
+
+    /**
+     * Метод для фильтрации данных
+     * @param Post $posts
+     * @param string $by
+     *
+     * @return Post|null
+     */
+    private function filters($posts, string $by)
+    {
+        if (strcmp($by, 'without-comment') == 0) {
+            return $posts->doesntHave('comments');
+        }
+        
+        if (strcmp($by, 'popular') == 0) {
+            return $posts->popular();
+        }
+        
+        if (strcmp($by, 'my') == 0 && Auth::user()) {
+            return $posts->userOwner(Auth::id());
+        } elseif (strcmp($by, 'my') == 0) {
+            // return null;
+            throw new HttpException(403, 'You\'re not authorization');
+        }
+
+        return $posts;
     }
 
     /**
@@ -113,14 +146,23 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $data = [];
+
+        if (request()->has('reply')) {
+            $data['replyName'] = ((Comment::find(request()->reply)->getAttribute('user')->name ?? 'Anonim') . ', ');
+        }
+
         $post->setAttribute('views', $post->getAttribute('views') + 1)
             ->update(['views']);
 
+        $data['post'] = $post;
+        $data['comments'] = $post->comments()
+            ->where('parent_id', '=', null)
+            ->paginate(10);
+        $data['time'] = \Carbon\Carbon::parse($post->getAttribute('updated_at'))->format('d-M-Y');
+
         return view('post.show', [
-            'post' => $post,
-            'comments' => $post->comments()
-                ->where('parent_id', '=', null)
-                ->paginate(10)
+            'data' => collect($data)
         ]);
     }
 

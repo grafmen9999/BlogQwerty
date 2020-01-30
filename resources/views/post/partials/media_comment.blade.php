@@ -14,7 +14,9 @@
     </div>
     <div class="media-text text-justify">{{ $comment->body }}</div>
     <div class="footer-comment">
-        <span class="comment-reply"><a href="?reply={{ $comment->id }}" class="reply">ответить</a></span>
+        <span class="comment-reply">
+            <a href="{{ route('post.show', ['post' => $data->get('post'), 'reply' => $comment->getKey()]) }}" class="reply">ответить</a>
+        </span>
     </div>
     @if ($comment->children->count() > 0)
         <ul class="children">
