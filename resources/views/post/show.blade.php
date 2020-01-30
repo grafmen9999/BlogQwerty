@@ -34,7 +34,7 @@
                     <div class="d-flex flex-row justify-content-between">
                         <div>
                             <span>
-                                Posted on {{ $data->get('time') }} by
+                                Posted on {{ $data->get('post')->getAttribute('created_at') }} by
                             </span>
                             <a href="{{ route('user.show', ['user' => $data->get('post')->user]) }}">
                                 {{ $data->get('post')->getAttribute('user')->getAttribute('name') }}

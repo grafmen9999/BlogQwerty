@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="row">
-        @forelse($posts as $post)
+        @forelse($data->get('posts') as $post)
         <div class="col-md-6 ">
             <div class="card mb-4">
                 <div class="card-body">
@@ -46,7 +46,7 @@
                     <div class="row">
                         <div class="col-md-7">
                             <span>
-                                Posted on {{ Carbon\Carbon::parse($post->getAttribute('updated_at'))->format('d-M-Y h:i:s') }} by
+                                Posted on {{ $post->getAttribute('created_at') }} by
                             </span>
                             <a href="{{ route('user.show', ['user' => $post->getAttribute('user')]) }}">
                                 {{ $post->getAttribute('user')->getAttribute('name') }}
@@ -73,7 +73,7 @@
 </div><!-- /.blog-main -->
 
 <nav class="blog-pagination">
-    <div>{{ $posts->links() }}</div>
+    <div>{{ $data->get('posts')->links() }}</div>
 </nav>
 
 @endsection

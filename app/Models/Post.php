@@ -16,6 +16,11 @@ class Post extends Model
      */
     protected $fillable = ['title', 'body', 'user_id', 'category_id'];
 
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-M-Y h:i:s');
+    }
+
     /**
      * @return void
      */

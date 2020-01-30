@@ -33,6 +33,8 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+        $data = [];
+
         $posts = Post::with('comments');
 
         /*
@@ -57,8 +59,10 @@ class PostController extends Controller
             });
         }
 
+        $data['posts'] = $posts->simplePaginate(15);
+
         return view('post.index', [
-            'posts' => $posts->simplePaginate(15)
+            'data' => collect($data)
         ]);
     }
 
@@ -159,7 +163,6 @@ class PostController extends Controller
         $data['comments'] = $post->comments()
             ->where('parent_id', '=', null)
             ->paginate(10);
-        $data['time'] = \Carbon\Carbon::parse($post->getAttribute('updated_at'))->format('d-M-Y');
 
         return view('post.show', [
             'data' => collect($data)
