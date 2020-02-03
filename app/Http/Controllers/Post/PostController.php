@@ -48,11 +48,12 @@ class PostController extends Controller
     }
 
     /**
-     * Функция фильтрации. Вынес её в приватную функцию контроллера
+     * Функция фильтрации. Вынес её в приватную функцию контроллера.
+     * Создаю необходимые классы фильтров чтоб можно было в цикле подготовить нужный запрос
      *
      * @param Request $request
      *
-     * @return void
+     * @return array PostFilter
      */
     private function filters(Request $request)
     {
