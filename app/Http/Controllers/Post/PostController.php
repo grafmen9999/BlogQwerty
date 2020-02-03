@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +18,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class PostController extends Controller
 {
-    public function __construct()
+    protected $repository;
+
+    public function __construct(PostRepository $repository)
     {
         $this->middleware(['auth', 'verified'])->except(['index', 'show']);
+        $this->repository = $repository;
     }
     /**
      * Display a listing of the resource.
@@ -34,32 +38,9 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $data = [];
+        $filters = $this->filters($request);
 
-        $posts = Post::with('comments');
-
-        /*
-        Да, мне стыдно за этот кусочек.
-        По хорошему тут надо сделать через интерфейc, и реализовать его,
-        возвращать метод будет подготовленный запрос (ИМХО)
-        */
-        if ($request->has('filter')) {
-            try {
-                $posts = $this->filters($posts, $request->filter);
-            } catch (HttpException $e) {
-                return redirect()->route('post.index')->withErrors([
-                    'code' => $e->getStatusCode(),
-                    'message' => $e->getMessage()
-                ]);
-            }
-        }
-
-        if ($request->has('tag')) {
-            $posts->whereHas('tags', function ($query) use ($request) {
-                $query->where('tag_id', '=', $request->tag);
-            });
-        }
-
-        $data['posts'] = $posts->simplePaginate(15);
+        $data['posts'] = $this->repository->get($filters);
 
         return view('post.index', [
             'data' => collect($data)
@@ -67,30 +48,33 @@ class PostController extends Controller
     }
 
     /**
-     * Метод для фильтрации данных
-     * @param Post $posts
-     * @param string $by
+     * Функция фильтрации. Вынес её в приватную функцию контроллера
      *
-     * @return Post|null
+     * @param Request $request
+     *
+     * @return void
      */
-    private function filters($posts, string $by)
+    private function filters(Request $request)
     {
-        if (strcmp($by, 'without-comment') == 0) {
-            return $posts->doesntHave('comments');
-        }
-        
-        if (strcmp($by, 'popular') == 0) {
-            return $posts->popular();
-        }
-        
-        if (strcmp($by, 'my') == 0 && Auth::user()) {
-            return $posts->userOwner(Auth::id());
-        } elseif (strcmp($by, 'my') == 0) {
-            // return null;
-            throw new HttpException(403, 'You\'re not authorization');
+        $filters = [];
+
+        if ($request->has('filter')) {
+            foreach ($request->get('filter') as $filter) {
+                if (!is_null($filter) && app()->has($filter)) {
+                    $filters[] = app()->make($filter);
+                }
+            }
         }
 
-        return $posts;
+        if ($request->has('tags')) {
+            foreach ($request->get('tags') as $tag) {
+                if (!is_null($tag)) {
+                    $filters[] = app()->makeWith('Tag', ['id' => $tag]);
+                }
+            }
+        }
+
+        return $filters;
     }
 
     /**

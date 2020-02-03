@@ -28,11 +28,7 @@
                         <div>Tags:
                                 <span class="tags">
                                 @foreach($post->getAttribute('tags') as $tag)
-                                    <a class="tag" href="{{ route('post.index', ['tag' => $tag->getKey()]) }}
-                                    @if(request()->has('filter'))
-                                        &filter={{ request()->filter }}
-                                    @endif"
-                                    >
+                                    <a class="tag" href="{{ route('post.index', ['tags[]' => $tag->getKey()]) }}">
                                         {{ $tag->getAttribute('name') }}
                                     </a>
                                 @endforeach

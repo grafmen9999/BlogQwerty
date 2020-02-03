@@ -37,9 +37,9 @@
                 <a id="navbarDropdownPosts" href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>Posts <span class="caret"></span></a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdonwPosts">
                     <a class="dropdown-item" href="{{ route('post.index') }}">All</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'without-comment']) }}">Without comments</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'popular']) }}">Popular</a>
-                    <a class="dropdown-item" href="{{ route('post.index', ['filter'=>'my']) }}">My-post</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter[]'=>'NoAnswer']) }}">Without comments</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter[]'=>'Popular']) }}">Popular</a>
+                    <a class="dropdown-item" href="{{ route('post.index', ['filter[]'=>'My']) }}">My-post</a>
                     <hr>
                     <a class="dropdown-item" href="{{ route('post.create') }}">Create new post</a>
                 </div>
