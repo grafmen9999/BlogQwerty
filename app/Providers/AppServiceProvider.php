@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Just method for create filter dependency
+     *
+     * @return void
+     */
     private function makeFilters()
     {
         $this->app->bind('NoAnswer', function () {
@@ -39,6 +44,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('App\Repositories\PostRepository', 'App\Repositories\PostRepositoryEloquent');
+        $this->app->bind('App\Repositories\PostRepositoryInterface', 'App\Repositories\PostRepositoryEloquent');
     }
 }

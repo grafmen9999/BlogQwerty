@@ -7,20 +7,26 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
-use App\Repositories\PostRepository;
+use App\Repositories\PostRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class PostController
  */
 class PostController extends Controller
 {
+    /**
+     * @var PostRepositoryInterface
+     */
     protected $repository;
 
-    public function __construct(PostRepository $repository)
+    /**
+     * @param PostRepositoryInterface $repository
+     *
+     * @return void
+     */
+    public function __construct(PostRepositoryInterface $repository)
     {
         $this->middleware(['auth', 'verified'])->except(['index', 'show']);
         $this->repository = $repository;
@@ -31,7 +37,7 @@ class PostController extends Controller
      * Посты мы получаем с условиями фильтраций
      *
      * @param \Illuminate\Http\Request $request Сюда могут передаваться фильтры
-     * [filter={without-comment, popular, my}, tag={tag_id}]
+     * [filter[]={NoAnswer, Popular, My}, tags[]={tagId}]
      *
      * @return \Illuminate\Http\Response
      */
@@ -49,7 +55,10 @@ class PostController extends Controller
 
     /**
      * Функция фильтрации. Вынес её в приватную функцию контроллера.
-     * Создаю необходимые классы фильтров чтоб можно было в цикле подготовить нужный запрос
+     * Создаю необходимые классы фильтров чтоб можно было в цикле подготовить нужный запрос.
+     * Имена фильтров регистрозависимые.
+     *
+     * P.S. Мне кажется что так будет небезопасно. Наверное стоит будет немного переделать данную фичу.
      *
      * @param Request $request
      *

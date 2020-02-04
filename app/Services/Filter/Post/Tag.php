@@ -4,7 +4,7 @@ namespace App\Services\Filter\Post;
 /**
  * Class Tag
  */
-class Tag implements FilterPost
+class Tag implements FilterPostInterface
 {
     /**
      * Tag id
@@ -24,6 +24,8 @@ class Tag implements FilterPost
     }
 
     /**
+     * Фильтрация за тегами
+     *
      * @param mixed $query
      *
      * @return Builder

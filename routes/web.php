@@ -33,11 +33,11 @@ Route::group(['namespace' => 'Comment'], function () {
     Route::resource('/comment', 'CommentController', ['only' => 'store']);
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::group(['namespace' => 'User'], function () {
     Route::resource('/user', 'UserController', ['only' => ['show', 'update']]);
 });
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 // Route::get('/test', function () {
 //     // return App\Comment::where('parent_id', '!=', null)->get();

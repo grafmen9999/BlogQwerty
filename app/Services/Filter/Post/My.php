@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Class My
  */
-class My implements FilterPost
+class My implements FilterPostInterface
 {
     /**
      * @param mixed $query

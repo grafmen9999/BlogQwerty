@@ -2,9 +2,9 @@
 namespace App\Repositories;
 
 /**
- * interface PostRepository
+ * interface PostRepositoryInterface
  */
-interface PostRepository
+interface PostRepositoryInterface
 {
     public function get();
 

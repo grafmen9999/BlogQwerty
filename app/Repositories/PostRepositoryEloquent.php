@@ -8,7 +8,7 @@ use \App\Models\Post;
  *
  * Реализация интерфейса репозитория для включения логики получения постов в этот класс
  */
-class PostRepositoryEloquent implements PostRepository
+class PostRepositoryEloquent implements PostRepositoryInterface
 {
     private $query;
 

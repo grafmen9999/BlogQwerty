@@ -2,9 +2,9 @@
 namespace App\Services\Filter\Post;
 
 /**
- * interface FilterPost
+ * interface FilterPostInterface
  */
-interface FilterPost
+interface FilterPostInterface
 {
     /**
      * Данная функция будет подготавливать запрос, который в последствии будет возвращать нужную выборку
