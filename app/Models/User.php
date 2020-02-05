@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAvatarSrcAttribute($value)
     {
         if (Storage::exists($value)) {
-            return Storage::url($value);
+            return "/storage/$value";
         } else {
             return $value;
         }

@@ -78,7 +78,7 @@ class UserController extends Controller
         if ($request->has('avatar_src')) {
             $filename = $user->getAttribute('email') . '_avatar.jpg';
             // save file to storage
-            $user->setAttribute('avatar_src', Storage::putFileAs('public/avatars', new File($request->file('avatar_src')), $filename)); // email is unique
+            $user->setAttribute('avatar_src', Storage::putFileAs('avatars', new File($request->file('avatar_src')), $filename)); // email is unique
         }
 
         $user->update();
