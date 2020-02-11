@@ -17,4 +17,9 @@ class CategoryRepositoryEloquent implements CategoryRepositoryInterface
             Category::create($data);
         }
     }
+
+    public function all()
+    {
+        return Category::all();
+    }
 }

@@ -33,19 +33,19 @@
             @endif
             <div class="row">
                 <div class="col-md-8">
-                    <form action="{{ route('post.update', ['post' => $post]) }}" method="POST" role="form">
+                    <form action="{{ route('post.update', ['post' => $data['post']]) }}" method="POST" role="form">
                         @csrf
                         @method('put')
                         <div class="form-group">
-                            <input class="form-control my-2" type="text" name="title" value="{{ $post->title }}" placeholder="Title">
-                            <textarea class="form-control" rows="3" name="body">{{ $post->getAttribute('body') }}</textarea>
+                            <input class="form-control my-2" type="text" name="title" value="{{ $data['post']->title }}" placeholder="Title">
+                            <textarea class="form-control" rows="3" name="body">{{ $data['post']->getAttribute('body') }}</textarea>
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <select name="category_id">
                                         <option value="" selected>-- Category not find --</option>
-                                        @foreach($categories as $category)
+                                        @foreach($data['categories'] as $category)
                                             <option value="{{ $category->getKey() }}"
-                                            @if ($category->getKey() == ($post->getAttribute('category')->id ?? ''))
+                                            @if ($category->getKey() == ($data['post']->getAttribute('category')->id ?? ''))
                                                 {{ __('selected') }}
                                             @endif
                                             >
@@ -56,9 +56,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <select class="form-control" name="tags[]" multiple>
-                                        @forelse($tags as $tag)
+                                        @forelse($data['tags'] as $tag)
                                             <option value="{{ $tag->getKey() }}"
-@foreach($post->getAttribute('tags') as $postTag)
+@foreach($data['post']->getAttribute('tags') as $postTag)
     @if ($tag->getKey() == $postTag->getKey())
         {{ __('selected') }}
     @endif

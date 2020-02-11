@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Repositories\CategoryRepositoryInterface;
+use App\Repositories\CommentRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
+use App\Repositories\TagRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -20,16 +25,26 @@ class PostController extends Controller
      * @var PostRepositoryInterface
      */
     protected $postRepository;
+    protected $tagRepository;
+    protected $categoryRepository;
+    protected $commentRepository;
 
     /**
      * @param PostRepositoryInterface $repository
      *
      * @return void
      */
-    public function __construct(PostRepositoryInterface $postRepository)
-    {
+    public function __construct(
+        PostRepositoryInterface $postRepository,
+        CommentRepositoryInterface $commentRepository,
+        TagRepositoryInterface $tagRepository,
+        CategoryRepositoryInterface $categoryRepository
+    ) {
         $this->middleware(['auth', 'verified'])->except(['index', 'show']);
         $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
+        $this->tagRepository = $tagRepository;
+        $this->categoryRepository = $categoryRepository;
     }
     /**
      * Display a listing of the resource.
@@ -44,9 +59,8 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $data = [];
-        $filters = $this->filters($request);
 
-        $data['posts'] = $this->repository->get($filters);
+        $data['posts'] = $this->postRepository->getByFilter($request->all(), Auth::id());
 
         return view('post.index', [
             'data' => collect($data)
@@ -62,9 +76,13 @@ class PostController extends Controller
      */
     public function create()
     {
+        $data = [];
+
+        $data['tags'] = $this->tagRepository->all();
+        $data['categories'] = $this->categoryRepository->all();
+
         return view('post.create', [
-            'tags' => Tag::all(),
-            'categories' => Category::all()
+            'data' => $data
         ]);
     }
 
@@ -95,8 +113,6 @@ class PostController extends Controller
         if ($request->has('tags')) {
             foreach ($request->tags as $tagId) {
                 $this->tagRepository->saveToPost($tagId, $post->id);
-                // $tag = Tag::find($tag_id);
-                // $tag->posts()->save($post);
             }
         }
         
@@ -127,7 +143,7 @@ class PostController extends Controller
         $this->postRepository->updateViews($id);
 
         $data['post'] = $post;
-        $data['comments'] = $this->postRepository->getComments();
+        $data['comments'] = $this->postRepository->getComments($id);
 
         return view('post.show', [
             'data' => collect($data)
@@ -142,12 +158,16 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($id)
     {
+        $data = [];
+
+        $data['post'] = $this->postRepository->findById($id);
+        $data['categories'] = $this->categoryRepository->all();
+        $data['tags'] = $this->tagRepository->all();
+
         return view('post.edit', [
-            'post' => $post,
-            'categories' => Category::all(),
-            'tags' => Tag::all(),
+            'data' => $data,
         ]);
     }
 
@@ -160,24 +180,30 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            "title" => 'required|string|max:255',
-            "body" => 'required|string',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     "title" => 'required|string|max:255',
+        //     "body" => 'required|string',
+        // ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
-        }
+        // if ($validator->fails()) {
+        //     return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
+        // }
+
+        $request->validated();
+
+        $post = $this->postRepository->findById($id);
 
         if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
+            $this->postRepository->syncTags($id, $request->tags);
+            // $post->tags()->sync($request->tags);
         } else {
-            $post->tags()->sync([]);
+            $this->postRepository->syncTags($id, []);
+            // $post->tags()->sync([]);
         }
         
-        $post->update($request->all());
+        $this->postRepository->update($id, $request->all());
 
         return redirect()->route('post.show', ['post' => $post]);
     }
@@ -189,8 +215,8 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        $post->delete();
+        $this->postRepository->delete($id);
     }
 }

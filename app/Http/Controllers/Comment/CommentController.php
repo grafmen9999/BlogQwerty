@@ -5,21 +5,35 @@ namespace App\Http\Controllers\Comment;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\CommentRequest;
+use App\Repositories\CommentRepositoryInterface;
+use App\Repositories\PostRepositoryInterface;
 
 class CommentController extends Controller
 {
+    private $postRepository;
+    private $commentRepository;
+
+    public function __construct(
+        PostRepositoryInterface $postRepository,
+        CommentRepositoryInterface $commentRepository
+    ) {
+        $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
+    }
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
-        Comment::create($request->all());
+        $request->validated();
+        
+        $this->commentRepository->create($request->all());
 
-        return redirect()->route('post.show', Post::find($request->post_id));
+        return redirect()->route('post.show', $this->postRepository->findById($request->post_id));
     }
 
     /**

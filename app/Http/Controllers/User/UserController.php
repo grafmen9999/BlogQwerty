@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -76,9 +77,21 @@ class UserController extends Controller
 
         // if we change the avatar
         if ($request->has('avatar_src')) {
-            $filename = $user->getAttribute('email') . '_avatar.jpg';
+            $directory = config('dir_image_avatar', 'image/avatars/');
+            $filename = $user->email . '_avatar.jpg';
+            $filesystem = new Filesystem();
+            
+            if ($filesystem->missing($directory)) {
+                $filesystem->makeDirectory($directory, 0755, true, true);
+                $file = fopen($directory . '.gitignore', 'w');
+                fprintf($file, "*\n!.gitignore");
+                fclose($file);
+            }
+            // $filename = $user->getAttribute('email') . '_avatar.jpg';
             // save file to storage
-            $user->setAttribute('avatar_src', Storage::putFileAs('avatars', new File($request->file('avatar_src')), $filename)); // email is unique
+            $file = new File($request->file('avatar_src'));
+            $filesystem->copy($file, $directory . $filename);
+            // $user->setAttribute('avatar_src', Storage::putFileAs('avatars', new File($request->file('avatar_src')), $filename)); // email is unique
         }
 
         $user->update();

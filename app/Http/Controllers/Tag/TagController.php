@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Tag;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tag;
+use App\Repositories\TagRepositoryInterface;
 use Illuminate\Http\Request;
 
 /**
@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
  */
 class TagController extends Controller
 {
+    private $tagRepository;
+
+    public function __construct(TagRepositoryInterface $tagRepository)
+    {
+        $this->tagRepository = $tagRepository;
+    }
     /**
      * Store a newly created resource in storage.
      * Можем создавать много тегов, в базе они не будут повторяться

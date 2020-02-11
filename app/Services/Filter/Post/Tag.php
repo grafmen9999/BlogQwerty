@@ -11,16 +11,16 @@ class Tag implements FilterPostInterface
      *
      * @var integer $id
      */
-    private $id;
+    private $tagId;
 
     /**
      * @param integer $id
      *
      * @return void
      */
-    public function __construct($id)
+    public function __construct($tagId)
     {
-        $this->id = $id;
+        $this->tagId = $tagId;
     }
 
     /**
@@ -33,7 +33,7 @@ class Tag implements FilterPostInterface
     public function filter($query)
     {
         return $query->whereHas('tags', function ($query) {
-            return $query->where('tag_id', '=', $this->id);
+            return $query->where('tag_id', '=', $this->tagId);
         });
     }
 }

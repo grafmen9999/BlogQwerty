@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use \App\Models\Post;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 /**
  * Class PostRepositoryEloquent
@@ -21,13 +21,13 @@ class PostRepositoryEloquent implements PostRepositoryInterface
     /**
      * Получить коллекцию, которая фильтруется по каким-то правилам
      *
-     * @param array $filters
+     * @param array $filterNames
      * @param integer $userId
      * @param integer $paginate
      *
      * @return Paginator
      */
-    public function getByFilter($filterNames, $userId, $paginate = 15)
+    public function getByFilter(array $filterNames, $userId, $paginate = 15)
     {
         $filters = $this->filters(collect($filterNames), $userId);
 
@@ -43,11 +43,65 @@ class PostRepositoryEloquent implements PostRepositoryInterface
      *
      * @param mixed $postId
      *
-     * @return void
+     * @return Builder|null
      */
     public function findById($id)
     {
-        return $this->query->find($id);
+        $post = $this->query->find($id);
+
+        if ($post === null) {
+            abort(404);
+        }
+
+        return $post;
+    }
+
+    public function getComments($id, $paginate = 10)
+    {
+        $post = $this->findById($id);
+        return $post->comments()
+            ->where('parent_id', '=', null)
+            ->paginate($paginate);
+    }
+
+    public function create(array $data)
+    {
+        $post = new Post($data);
+        $post->save();
+
+        return $post;
+    }
+
+    public function updateViews($id)
+    {
+        $post = $this->findById($id);
+        
+        $post->views = $post->views + 1;
+        $post->update(['views']);
+
+        return $post;
+    }
+
+    public function update($id, array $data)
+    {
+        $post = $this->findById($id);
+
+        $post->fill($data);
+        $post->update([$data]);
+
+        return $post;
+    }
+
+    public function delete($id)
+    {
+        $post = $this->findById($id);
+        $post->delete();
+    }
+
+    public function syncTags($id, array $data)
+    {
+        $post = $this->findById($id);
+        $post->tags()->sync($data);
     }
     
     /**
@@ -83,5 +137,4 @@ class PostRepositoryEloquent implements PostRepositoryInterface
 
         return $filters;
     }
-
 }

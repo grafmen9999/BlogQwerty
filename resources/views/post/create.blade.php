@@ -41,14 +41,14 @@
                                 <div class="col-md-6">
                                     <select class="form-control" name="category_id">
                                         <option value="" selected>-- Category not find --</option>
-                                        @foreach($categories as $category)
+                                        @foreach($data['categories'] as $category)
                                             <option value="{{ $category->getKey() }}">{{ $category->getAttribute('name') }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-6">
                                     <select class="form-control" name="tags[]" multiple>
-                                        @forelse($tags as $tag)
+                                        @forelse($data['tags'] as $tag)
                                             <option value="{{ $tag->getKey() }}">{{ $tag->getAttribute('name') }}</option>
                                         @empty
                                             <option value="" disabled>-- Tags not find --</option>

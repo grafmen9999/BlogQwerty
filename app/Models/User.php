@@ -48,10 +48,6 @@ class User extends Authenticatable implements MustVerifyEmail
         $directory = config('dir_image_avatar', 'image/avatars/');
         $filename = $this->email . '_avatar.jpg';
         $filesystem = new Filesystem();
-        
-        if ($filesystem->missing($directory)) {
-            $filesystem->makeDirectory($directory, 0755, true, true);
-        }
 
         if ($filesystem->exists($directory . $filename)) {
             return '/' . $directory . $filename;

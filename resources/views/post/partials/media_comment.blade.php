@@ -5,7 +5,7 @@
         <a href=" {{ route('user.show', ['user' => $comment->user]) }} "><img class="media-object img-rounded" src="{{ $comment->user->avatar_src }}" alt="img"></a>
     </div>
     @else
-    <div class="media-left"><img class="media-object img-rounded" src="https://place-hold.it/20x20?text=A" alt="img"></div>
+    <div class="media-left"><img class="media-object img-rounded" src="https://place-hold.it/64x64/3300ff/000123.jpg&text=Anonim&fontsize=13" alt="img"></div>
     @endisset
     <div class="media-body ml-2">
         <div class="media-heading">

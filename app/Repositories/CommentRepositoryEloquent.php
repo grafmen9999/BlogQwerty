@@ -12,4 +12,9 @@ class CommentRepositoryEloquent implements CommentRepositoryInterface
 
         return $comment;
     }
+
+    public function findById($id)
+    {
+        return Comment::find($id);
+    }
 }
