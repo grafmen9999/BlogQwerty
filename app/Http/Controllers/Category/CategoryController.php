@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Repositories\CategoryRepositoryInterface;
 use Illuminate\Http\Request;
 
 /**
@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
  */
 class CategoryController extends Controller
 {
+    private $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Store a newly created resource in storage.
      *

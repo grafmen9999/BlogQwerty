@@ -27,7 +27,7 @@ class TagRepositoryEloquent implements TagRepositoryInterface
 
     public function all()
     {
-        return Tag::all();
+        return Tag::orderBy('name')->get();
     }
 
     public function findById($id)

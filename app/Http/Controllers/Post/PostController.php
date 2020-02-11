@@ -4,17 +4,12 @@ namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
-use App\Models\Category;
-use App\Models\Comment;
-use App\Models\Post;
-use App\Models\Tag;
 use App\Repositories\CategoryRepositoryInterface;
 use App\Repositories\CommentRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 /**
  * Class PostController
@@ -96,15 +91,6 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     "title" => 'required|string|max:255',
-        //     "body" => 'required|string',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
-        // }
-
         $request->validated();
 
         // ($post = new Post($request->all()))->save();
@@ -182,15 +168,6 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
-        // $validator = Validator::make($request->all(), [
-        //     "title" => 'required|string|max:255',
-        //     "body" => 'required|string',
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
-        // }
-
         $request->validated();
 
         $post = $this->postRepository->findById($id);
