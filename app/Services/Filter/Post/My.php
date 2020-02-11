@@ -1,15 +1,21 @@
 <?php
 namespace App\Services\Filter\Post;
 
-use Illuminate\Support\Facades\Auth;
-
 /**
  * Class My
  */
 class My implements FilterPostInterface
 {
+    /**
+     * @var integer
+     */
     private $userId;
 
+    /**
+     * @param mixed $userId
+     *
+     * @return void
+     */
     public function __construct($userId)
     {
         $this->userId = $userId;

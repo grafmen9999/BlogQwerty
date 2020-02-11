@@ -4,10 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Http\File;
+use App\Services\Manager\FileManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -51,9 +49,11 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
         $validator = $this->validateForm($request);
+
+        $user = User::findOrFail($id);
 
         if ($validator->fails()) {
             return redirect()
@@ -62,12 +62,12 @@ class UserController extends Controller
                 ->withInput($request->except(['password', 'password_confirmation']));
         } else {
             // change data if we don't find errors
-            if ($request->has('name')) {
-                $user->setAttribute('name', $request->name);
-            }
-
+            $user->setAttribute('name', $request->name ?? $user->name);
+            
             if ($request->has('email')) {
+                
                 $user->setAttribute('email', $request->email);
+
             }
 
             if ($request->has('password')) {
@@ -76,25 +76,15 @@ class UserController extends Controller
         }
 
         // if we change the avatar
+        // Temporary solution. I think how to solve it.
         if ($request->has('avatar_src')) {
             $directory = config('dir_image_avatar', 'image/avatars/');
             $filename = $user->email . '_avatar.jpg';
-            $filesystem = new Filesystem();
-            
-            if ($filesystem->missing($directory)) {
-                $filesystem->makeDirectory($directory, 0755, true, true);
-                $file = fopen($directory . '.gitignore', 'w');
-                fprintf($file, "*\n!.gitignore");
-                fclose($file);
-            }
-            // $filename = $user->getAttribute('email') . '_avatar.jpg';
-            // save file to storage
-            $file = new File($request->file('avatar_src'));
-            $filesystem->copy($file, $directory . $filename);
-            // $user->setAttribute('avatar_src', Storage::putFileAs('avatars', new File($request->file('avatar_src')), $filename)); // email is unique
+
+            (new FileManager())->create($directory, $filename, $request->file('avatar_src'));
         }
 
-        $user->update();
+        $user->update($request->all());
 
         return redirect()->route('user.show', ['user' => $user]);
     }

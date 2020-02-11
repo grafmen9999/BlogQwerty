@@ -9,12 +9,12 @@ class Tag implements FilterPostInterface
     /**
      * Tag id
      *
-     * @var integer $id
+     * @var integer $tagId
      */
     private $tagId;
 
     /**
-     * @param integer $id
+     * @param integer $tagId
      *
      * @return void
      */
@@ -24,7 +24,7 @@ class Tag implements FilterPostInterface
     }
 
     /**
-     * Фильтрация за тегами
+     * Filter by tags
      *
      * @param mixed $query
      *

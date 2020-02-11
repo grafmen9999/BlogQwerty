@@ -11,8 +11,16 @@ use Illuminate\Http\Request;
  */
 class CategoryController extends Controller
 {
+    /**
+     * @var CategoryRepositoryInterface
+     */
     private $categoryRepository;
 
+    /**
+     * @param CategoryRepositoryInterface $categoryRepository
+     *
+     * @return void
+     */
     public function __construct(CategoryRepositoryInterface $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;

@@ -5,13 +5,28 @@ use App\Models\Tag;
 
 class TagRepositoryEloquent implements TagRepositoryInterface
 {
+    /**
+     * @var PostRepositoryInterface
+     */
     private $postRepository;
 
+    /**
+     * @param PostRepositoryInterface $postRepository
+     *
+     * @return void
+     */
     public function __construct(PostRepositoryInterface $postRepository)
     {
         $this->postRepository = $postRepository;
     }
 
+    /**
+     * Create unique tags
+     *
+     * @param array $data
+     *
+     * @return void
+     */
     public function create(array $data)
     {
         $tags = preg_split('%[\s,:;|]+%', $data['names']);
@@ -25,6 +40,11 @@ class TagRepositoryEloquent implements TagRepositoryInterface
         }
     }
 
+    /**
+     * Get all tags sort by 'name' fields
+     *
+     * @return Collection
+     */
     public function all()
     {
         return Tag::orderBy('name')->get();
@@ -41,6 +61,14 @@ class TagRepositoryEloquent implements TagRepositoryInterface
         return $tag;
     }
 
+    /**
+     * Add belongs between post and tag
+     *
+     * @param mixed $tagId
+     * @param mixed $postId
+     *
+     * @return void
+     */
     public function saveToPost($tagId, $postId)
     {
         $tag = $this->findById($tagId);
