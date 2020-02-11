@@ -13,19 +13,36 @@ class AppServiceProvider extends ServiceProvider
      */
     private function makeFilters()
     {
-        $this->app->bind('NoAnswer', function () {
-            return new \App\Services\Filter\Post\NoAnswer();
-        });
+        $this->app->bind('NoAnswer', \App\Services\Filter\Post\NoAnswer::class);
 
-        $this->app->bind('My', function () {
-            return new \App\Services\Filter\Post\My();
-        });
+        $this->app->bind('My', \App\Services\Filter\Post\My::class);
 
-        $this->app->bind('Popular', function () {
-            return new \App\Services\Filter\Post\Popular;
-        });
+        $this->app->bind('Popular', \App\Services\Filter\Post\Popular::class);
 
-        $this->app->bind('Tag', '\App\Services\Filter\Post\Tag');
+        $this->app->bind('Tag', \App\Services\Filter\Post\Tag::class);
+    }
+
+    private function makeRepositories()
+    {
+        $this->app->bind(
+            'App\Repositories\PostRepositoryInterface',
+            'App\Repositories\PostRepositoryEloquent'
+        );
+        
+        $this->app->bind(
+            'App\Repositories\CategoryRepositoryInterface',
+            'App\Repositories\CategoryRepositoryEloquent'
+        );
+        
+        $this->app->bind(
+            'App\Repositories\TagRepositoryInterface',
+            'App\Repositories\TagRepositoryEloquent'
+        );
+        
+        $this->app->bind(
+            'App\Repositories\CommentRepositoryInterface',
+            'App\Repositories\CommentRepositoryEloquent'
+        );
     }
     /**
      * Register any application services.
@@ -44,6 +61,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind('App\Repositories\PostRepositoryInterface', 'App\Repositories\PostRepositoryEloquent');
+        $this->makeRepositories();
     }
 }

@@ -6,7 +6,7 @@ namespace App\Repositories;
  */
 interface PostRepositoryInterface
 {
-    public function get();
+    public function getByFilter($filterNames, $userId);
 
-    public function findById($postId);
+    public function findById($id);
 }

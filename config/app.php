@@ -228,4 +228,6 @@ return [
 
     ],
 
+    'dir_image_avatar' => env('APP_RESOURCE_IMAGE_AVATARS', 'image/avatars/'),
+
 ];

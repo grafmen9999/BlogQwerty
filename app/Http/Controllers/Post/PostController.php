@@ -19,17 +19,17 @@ class PostController extends Controller
     /**
      * @var PostRepositoryInterface
      */
-    protected $repository;
+    protected $postRepository;
 
     /**
      * @param PostRepositoryInterface $repository
      *
      * @return void
      */
-    public function __construct(PostRepositoryInterface $repository)
+    public function __construct(PostRepositoryInterface $postRepository)
     {
         $this->middleware(['auth', 'verified'])->except(['index', 'show']);
-        $this->repository = $repository;
+        $this->postRepository = $postRepository;
     }
     /**
      * Display a listing of the resource.
@@ -51,40 +51,6 @@ class PostController extends Controller
         return view('post.index', [
             'data' => collect($data)
         ]);
-    }
-
-    /**
-     * Функция фильтрации. Вынес её в приватную функцию контроллера.
-     * Создаю необходимые классы фильтров чтоб можно было в цикле подготовить нужный запрос.
-     * Имена фильтров регистрозависимые.
-     *
-     * P.S. Мне кажется что так будет небезопасно. Наверное стоит будет немного переделать данную фичу.
-     *
-     * @param Request $request
-     *
-     * @return array PostFilter
-     */
-    private function filters(Request $request)
-    {
-        $filters = [];
-
-        if ($request->has('filter')) {
-            foreach ($request->get('filter') as $filter) {
-                if (!is_null($filter) && app()->has($filter)) {
-                    $filters[] = app()->make($filter);
-                }
-            }
-        }
-
-        if ($request->has('tags')) {
-            foreach ($request->get('tags') as $tag) {
-                if (!is_null($tag)) {
-                    $filters[] = app()->makeWith('Tag', ['id' => $tag]);
-                }
-            }
-        }
-
-        return $filters;
     }
 
     /**
@@ -110,23 +76,27 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            "title" => 'required|string|max:255',
-            "body" => 'required|string',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     "title" => 'required|string|max:255',
+        //     "body" => 'required|string',
+        // ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
-        }
+        // if ($validator->fails()) {
+        //     return redirect()->back()->withErrors($validator->errors())->withInput($request->except(['user_id']));
+        // }
 
-        ($post = new Post($request->all()))->save();
+        $request->validated();
+
+        // ($post = new Post($request->all()))->save();
+        $post = $this->postRepository->create($request->all());
 
         if ($request->has('tags')) {
-            foreach ($request->tags as $tag_id) {
-                $tag = Tag::find($tag_id);
-                $tag->posts()->save($post);
+            foreach ($request->tags as $tagId) {
+                $this->tagRepository->saveToPost($tagId, $post->id);
+                // $tag = Tag::find($tag_id);
+                // $tag->posts()->save($post);
             }
         }
         
@@ -142,21 +112,22 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($id)
     {
+        $post = $this->postRepository->findById($id);
         $data = [];
 
         if (request()->has('reply')) {
-            $data['replyName'] = ((Comment::find(request()->reply)->getAttribute('user')->name ?? 'Anonim') . ', ');
+            $data['replyName'] = (
+                $this->commentRepository->findById(request()->reply)
+                ->name ?? 'Anonim'
+            . ', ');
         }
 
-        $post->setAttribute('views', $post->getAttribute('views') + 1)
-            ->update(['views']);
+        $this->postRepository->updateViews($id);
 
         $data['post'] = $post;
-        $data['comments'] = $post->comments()
-            ->where('parent_id', '=', null)
-            ->paginate(10);
+        $data['comments'] = $this->postRepository->getComments();
 
         return view('post.show', [
             'data' => collect($data)

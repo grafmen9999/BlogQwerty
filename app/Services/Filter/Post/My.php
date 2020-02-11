@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
  */
 class My implements FilterPostInterface
 {
+    private $userId;
+
+    public function __construct($userId)
+    {
+        $this->userId = $userId;
+    }
     /**
      * @param mixed $query
      *
@@ -15,6 +21,6 @@ class My implements FilterPostInterface
      */
     public function filter($query)
     {
-        return $query->userOwner(Auth::id());
+        return $query->userOwner($this->userId);
     }
 }

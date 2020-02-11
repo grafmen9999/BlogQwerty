@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Post extends Model
 {
-    
     /**
      * @var array
      */
@@ -17,43 +17,43 @@ class Post extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return \Carbon\Carbon::parse($value)->format('d-M-Y h:i:s');
+        return Carbon::parse($value)->format('d-M-Y h:i:s');
     }
 
     /**
-     * @return void
+     * @return BelongsTo
      */
     public function user()
     {
-        return $this->belongsTo('\App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * @return void
+     * @return BelongsTo
      */
     public function category()
     {
-        return $this->belongsTo('\App\Models\Category');
+        return $this->belongsTo(Category::class);
     }
 
     /**
      * Возвращает теги в этом посте
      *
-     * @return \App\Models\Tag collection tags
+     * @return BelongsToMany collection tags
      */
     public function tags()
     {
-        return $this->belongsToMany('\App\Models\Tag');
+        return $this->belongsToMany(Tag::class);
     }
 
     /**
      * Возвращает комментарии в этом посте
      *
-     * @return \App\Models\Comment collection comments
+     * @return HasMany collection comments
      */
     public function comments()
     {
-        return $this->hasMany('\App\Models\Comment');
+        return $this->hasMany(Comment::class);
     }
 
     /**

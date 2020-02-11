@@ -20,15 +20,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $categories = Category::all();
-
-        $filters = $categories->filter(function ($item, $key) use ($request) {
-            return strcmp($item->getAttribute('name'), $request->name) == 0;
-        });
-
-        if ($filters->count() == 0) {
-            Category::create($request->all());
-        }
+        $this->categoryRepository->create($request->all());
 
         return redirect()->back();
     }

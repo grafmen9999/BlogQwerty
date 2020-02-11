@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=Oleg'
+            // 'avatar_src' => 'https://place-hold.it/30x30?text=Oleg'
         ]);
 
         DB::table('users')->insert([
@@ -45,7 +45,7 @@ class UsersTableSeeder extends Seeder
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=Alex'
+            // 'avatar_src' => 'https://place-hold.it/30x30?text=Alex'
         ]);
 
         DB::table('users')->insert([
@@ -56,7 +56,7 @@ class UsersTableSeeder extends Seeder
             'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),
-            'avatar_src' => 'https://place-hold.it/30x30?text=QS'
+            // 'avatar_src' => 'https://place-hold.it/30x30?text=QS'
         ]);
 
         factory(App\Models\User::class, 50)->create();

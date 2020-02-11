@@ -22,15 +22,7 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        $tags = preg_split('%[\s,:;|]+%', $request->names);
-
-        foreach ($tags as $val) {
-            $tagCount = Tag::where('name', '=', $val)->count();
-
-            if ($tagCount == 0) {
-                Tag::create(['name' => $val]);
-            }
-        }
+        $this->tagRepository->create($request->all());
 
         return redirect()->back();
     }
