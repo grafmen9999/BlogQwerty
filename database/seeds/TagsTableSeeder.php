@@ -1,8 +1,7 @@
 <?php
 
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Class TagsTableSeeder
@@ -16,15 +15,6 @@ class TagsTableSeeder extends Seeder
      */
     public function run()
     {
-        // factory(App\Tag::class, 10)->create();
-        DB::table('tags')->insert([
-            'name' => 'tag1'
-        ]);
-        DB::table('tags')->insert([
-            'name' => 'tag2'
-        ]);
-        DB::table('tags')->insert([
-            'name' => 'tag3'
-        ]);
+        factory(Tag::class, 20)->create();
     }
 }

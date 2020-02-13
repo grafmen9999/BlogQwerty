@@ -16,6 +16,9 @@ class CreatePostTag extends Migration
         Schema::create('post_tag', function (Blueprint $table) {
             $table->unsignedInteger('post_id');
             $table->unsignedInteger('tag_id');
+
+            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('tag_id')->references('id')->on('tags');
         });
     }
 
@@ -26,6 +29,11 @@ class CreatePostTag extends Migration
      */
     public function down()
     {
+        Schema::table('post_tag', function (Blueprint $table) {
+            $table->dropForeign('post_tag_post_id_foreign');
+            $table->dropForeign('post_tag_tag_id_foreign');
+        });
+
         Schema::dropIfExists('post_tag');
     }
 }

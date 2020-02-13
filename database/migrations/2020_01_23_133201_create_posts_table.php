@@ -23,6 +23,7 @@ class CreatePostsTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
@@ -35,6 +36,7 @@ class CreatePostsTable extends Migration
     {
         Schema::table('posts', function (Blueprint $table) {
             $table->dropForeign('posts_user_id_foreign');
+            $table->dropForeign('posts_category_id_foreign');
         });
 
         Schema::dropIfExists('posts');
