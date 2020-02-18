@@ -33,7 +33,7 @@ class CommentController extends Controller
         
         $this->commentRepository->create($request->all());
 
-        return redirect()->route('post.show', $this->postRepository->findById($request->post_id));
+        return redirect()->route('post.show', $this->postRepository->findById($request->post_id), 201);
     }
 
     /**

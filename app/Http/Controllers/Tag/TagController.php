@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Tag;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TagRequest;
 use App\Repositories\TagRepositoryInterface;
-use Illuminate\Http\Request;
 
 /**
  * Class TagController
@@ -26,9 +26,9 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TagRequest $request)
     {
-        $this->tagRepository->create($request->all());
+        $this->tagRepository->create($request->validated());
 
         return redirect()->back();
     }

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Repositories\CategoryRepositoryInterface;
-use Illuminate\Http\Request;
 
 /**
  * Class CategoryController
@@ -32,10 +32,10 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $this->categoryRepository->create($request->all());
+        $this->categoryRepository->create($request->validated());
 
-        return redirect()->back();
+        return redirect()->back(201);
     }
 }

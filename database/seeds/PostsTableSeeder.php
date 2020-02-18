@@ -1,10 +1,8 @@
 <?php
 
-use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class PostsTableSeeder
@@ -18,7 +16,7 @@ class PostsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Post::class, 15)
+        factory(Post::class, 150)
         ->create()
         // for fill tags
         ->each(function ($post) {

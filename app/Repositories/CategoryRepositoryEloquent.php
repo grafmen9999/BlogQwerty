@@ -14,8 +14,10 @@ class CategoryRepositoryEloquent implements CategoryRepositoryInterface
         });
 
         if ($filters->count() == 0) {
-            Category::create($data);
+            return Category::create($data);
         }
+
+        return null;
     }
 
     public function all()

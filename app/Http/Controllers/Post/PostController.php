@@ -93,7 +93,6 @@ class PostController extends Controller
     {
         $request->validated();
 
-        // ($post = new Post($request->all()))->save();
         $post = $this->postRepository->create($request->all());
 
         if ($request->has('tags')) {
@@ -102,7 +101,8 @@ class PostController extends Controller
             }
         }
         
-        return redirect()->route('post.show', ['post' => $post]);
+        return response()->json(['post' => $post], 201);
+        // return redirect()->route('post.show', ['post' => $post], 201);
     }
 
     /**
@@ -122,8 +122,8 @@ class PostController extends Controller
         if (request()->has('reply')) {
             $data['replyName'] = (
                 $this->commentRepository->findById(request()->reply)
-                ->name ?? 'Anonim'
-            . ', ');
+                ->user->name ?? 'Anonim')
+            . ', ';
         }
 
         $this->postRepository->updateViews($id);
@@ -174,15 +174,15 @@ class PostController extends Controller
 
         if ($request->has('tags')) {
             $this->postRepository->syncTags($id, $request->tags);
-            // $post->tags()->sync($request->tags);
         } else {
             $this->postRepository->syncTags($id, []);
-            // $post->tags()->sync([]);
         }
         
-        $this->postRepository->update($id, $request->all());
+        $post = $this->postRepository->update($id, $request->all());
 
-        return redirect()->route('post.show', ['post' => $post]);
+        return response()->json(['post' => $post], 200);
+        // return response(view(route('post.show', ['post' => $post])), 200);
+        // return redirect()->route('post.show', ['post' => $post], 201);
     }
 
     /**
