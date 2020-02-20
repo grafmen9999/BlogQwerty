@@ -26,6 +26,7 @@ class PostRequest extends FormRequest
         return [
             "title" => 'required|string|max:255',
             "body" => 'required|string',
+            "_token" => 'required',
         ];
     }
 }

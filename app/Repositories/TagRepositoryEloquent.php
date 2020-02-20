@@ -29,19 +29,18 @@ class TagRepositoryEloquent implements TagRepositoryInterface
      */
     public function create(array $data)
     {
-        $tags = preg_split('%[\s,:;|]+%', $data['names']);
+        $tagsArray = preg_split('%[\s,:;|]+%', $data['names']);
+        $tags = [];
 
-
-
-        foreach ($tags as $tagName) {
+        foreach ($tagsArray as $tagName) {
             $tagCount = Tag::where('name', '=', $tagName)->count();
 
             if ($tagCount == 0) {
-                $tags = Tag::create(['name' => $tagName]);
+                $tags[] = Tag::create(['name' => $tagName]);
             }
-
-            return null;
         }
+        
+        return $tags;
     }
 
     /**

@@ -13,7 +13,7 @@ class CategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return $this->user() !== null;
     }
 
     /**
@@ -24,7 +24,8 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:32'
+            'name' => 'required|string|max:32',
+            '_token' => 'required'
         ];
     }
 }

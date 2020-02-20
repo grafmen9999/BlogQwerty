@@ -120,6 +120,10 @@ class PostRepositoryEloquent implements PostRepositoryInterface
         $filters = [];
 
         if ($filterNames->has('filter')) {
+            if (!is_array($filterNames->get('filter'))) {
+                abort(403);
+            }
+            
             foreach ($filterNames->get('filter') as $filter) {
                 if (!is_null($filter) && app()->has($filter)) {
                     $filters[] = app()->makeWith($filter, ['userId' => $userId]);
@@ -128,6 +132,10 @@ class PostRepositoryEloquent implements PostRepositoryInterface
         }
 
         if ($filterNames->has('tags')) {
+            if (!is_array($filterNames->get('tags'))) {
+                abort(403);
+            }
+            
             foreach ($filterNames->get('tags') as $tagId) {
                 if (!is_null($tagId)) {
                     $filters[] = app()->makeWith('Tag', ['tagId' => $tagId]);

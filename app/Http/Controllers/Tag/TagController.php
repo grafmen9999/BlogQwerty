@@ -28,8 +28,13 @@ class TagController extends Controller
      */
     public function store(TagRequest $request)
     {
-        $this->tagRepository->create($request->validated());
+        $tags = $this->tagRepository->create($request->validated());
 
-        return redirect()->back();
+        if (empty($tags)) {
+            abort(404);
+        } else {
+            return response()->json(['tags' => $tags], 201);
+        }
+//        return redirect()->back();
     }
 }

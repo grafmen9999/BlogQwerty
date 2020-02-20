@@ -13,7 +13,7 @@ class TagRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -24,7 +24,8 @@ class TagRequest extends FormRequest
     public function rules()
     {
         return [
-            'names' => 'required|string'
+            'names' => 'required|string',
+            '_token' => 'required'
         ];
     }
 }

@@ -10,6 +10,7 @@ use App\Repositories\PostRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Log;
 
 /**
  * Class PostController
@@ -53,13 +54,17 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
+//        Log::log('info', ($request->all()));
+        
         $data = [];
 
         $data['posts'] = $this->postRepository->getByFilter($request->all(), Auth::id());
 
-        return view('post.index', [
-            'data' => collect($data)
-        ]);
+        return response()->json(['data' => $data], 200);
+
+        // return view('post.index', [
+        //     'data' => collect($data)
+        // ]);
     }
 
     /**
@@ -102,7 +107,7 @@ class PostController extends Controller
         }
         
         return response()->json(['post' => $post], 201);
-        // return redirect()->route('post.show', ['post' => $post], 201);
+//         return redirect()->route('post.show', ['post' => $post], 201);
     }
 
     /**
@@ -121,9 +126,9 @@ class PostController extends Controller
 
         if (request()->has('reply')) {
             $data['replyName'] = (
-                $this->commentRepository->findById(request()->reply)
-                ->user->name ?? 'Anonim')
-            . ', ';
+                $this->commentRepository
+                    ->findById(request()->reply)
+                    ->user->name ?? 'Anonim') . ', ';
         }
 
         $this->postRepository->updateViews($id);
@@ -170,14 +175,13 @@ class PostController extends Controller
     {
         $request->validated();
 
-        $post = $this->postRepository->findById($id);
-
         if ($request->has('tags')) {
             $this->postRepository->syncTags($id, $request->tags);
         } else {
             $this->postRepository->syncTags($id, []);
         }
         
+        /* @var $post \App\Models\Post */
         $post = $this->postRepository->update($id, $request->all());
 
         return response()->json(['post' => $post], 200);

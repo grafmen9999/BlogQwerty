@@ -31,9 +31,10 @@ class CommentController extends Controller
     {
         $request->validated();
         
-        $this->commentRepository->create($request->all());
-
-        return redirect()->route('post.show', $this->postRepository->findById($request->post_id), 201);
+        $comment = $this->commentRepository->create($request->all());
+        
+        return response()->json(['comments' => $comment], 201);
+//        return redirect()->route('post.show', $this->postRepository->findById($request->post_id), 201);
     }
 
     /**
