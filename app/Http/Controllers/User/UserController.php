@@ -65,9 +65,12 @@ class UserController extends Controller
             $user->setAttribute('name', $request->name ?? $user->name);
             
             if ($request->has('email')) {
-                
+                $directory = config('dir_image_avatar', 'image/avatars/');
+                $oldName = $directory . $user->email . '_avatar.jpg';
+                $newName = $directory . $request->email . '_avatar.jpg';
                 $user->setAttribute('email', $request->email);
 
+                (new FileManager())->rename($oldName, $newName);
             }
 
             if ($request->has('password')) {

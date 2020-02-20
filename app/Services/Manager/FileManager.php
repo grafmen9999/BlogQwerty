@@ -6,6 +6,9 @@ use Illuminate\Http\File;
 
 class FileManager
 {
+    /**
+     * @var Filesystem
+     */
     private $filesystem;
 
     public function __construct()
@@ -27,7 +30,7 @@ class FileManager
     {
         // save file to storage
         $file = new File($file);
-        $this->filesystem->copy($file, $path);
+        return $this->filesystem->copy($file, $path);
     }
 
     public function create(string $directory, string $filename, $file, bool $isCreateDirectory = true)
@@ -36,6 +39,11 @@ class FileManager
             $this->createDirectory($directory);
         }
 
-        $this->store($directory . $filename, $file);
+        return $this->store($directory . $filename, $file);
+    }
+
+    public function rename($oldName, $newName)
+    {
+        return $this->filesystem->move($oldName, $newName);
     }
 }
